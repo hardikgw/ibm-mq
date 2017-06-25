@@ -3,12 +3,14 @@ package biz.cit.ibmmq;
 /**
  * Created by hp on 6/24/17.
  */
+import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.autoconfigure.jms.JmsProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
@@ -63,6 +65,8 @@ public class App {
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
                                                     DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        factory.setSessionTransacted(false);
+        factory.setConcurrency("1-1");
         configurer.configure(factory, cachingConnectionFactory);
         return factory;
     }
@@ -92,11 +96,11 @@ public class App {
         for (int i = 0; i < 200; i++) {
             jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World");
         }
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            String received = (String) jmsTemplate.receiveAndConvert("DEV.QUEUE.1");
-        }
-        System.out.println("Avg time for 100 messages: " + String.valueOf((System.currentTimeMillis() - start)/100));
+//        long start = System.currentTimeMillis();
+//        for (int i = 0; i < 100; i++) {
+//            String received = (String) jmsTemplate.receiveAndConvert("DEV.QUEUE.1");
+//        }
+//        System.out.println("Avg time for 100 messages: " + String.valueOf((System.currentTimeMillis() - start)/100));
 
     }
 
