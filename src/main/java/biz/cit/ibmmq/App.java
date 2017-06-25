@@ -96,6 +96,10 @@ public class App {
         for (int i = 0; i < 200; i++) {
             jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World");
         }
+
+        while (true) {
+            jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World");
+        }
 //        long start = System.currentTimeMillis();
 //        for (int i = 0; i < 100; i++) {
 //            String received = (String) jmsTemplate.receiveAndConvert("DEV.QUEUE.1");
