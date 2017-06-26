@@ -40,6 +40,11 @@
             <artifactId>all-client</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>ibm</groupId>
+            <artifactId>traceControl</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
