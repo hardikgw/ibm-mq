@@ -6,6 +6,7 @@ package biz.cit.ibmmq;
 import com.ibm.mq.MQEnvironment;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
+import javafx.scene.control.SelectionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,11 +44,13 @@ public class App {
         MQQueueConnectionFactory mqQueueConnectionFactory = new MQQueueConnectionFactory();
         mqQueueConnectionFactory.setHostName("localhost");
         try {
-            mqQueueConnectionFactory.setTransportType(WMQConstants.WMQ_CM_BINDINGS);
+            mqQueueConnectionFactory.setTransportType(WMQConstants.WMQ_CM_BINDINGS_THEN_CLIENT);
             mqQueueConnectionFactory.setCCSID(1208);
             mqQueueConnectionFactory.setQueueManager("QM1");
             mqQueueConnectionFactory.setPort(1414);
+            mqQueueConnectionFactory.setVersion(9);
             mqQueueConnectionFactory.setChannel("DEV.ADMIN.SVRCONN");
+            mqQueueConnectionFactory.setUseConnectionPooling(true);
         } catch (JMSException e) {
             e.printStackTrace();
         }
@@ -95,7 +98,7 @@ public class App {
 
         JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
         System.out.println("Sending messages.");
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World");
         }
 
