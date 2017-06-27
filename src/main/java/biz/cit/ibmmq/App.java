@@ -18,9 +18,11 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -56,6 +58,11 @@ public class App {
             e.printStackTrace();
         }
         return mqQueueConnectionFactory;
+    }
+
+    @Bean
+    public PlatformTransactionManager platformTransactionManager(CachingConnectionFactory cachingConnectionFactory){
+        return new JmsTransactionManager(cachingConnectionFactory);
     }
 
     @Bean
