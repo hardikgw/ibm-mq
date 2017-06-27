@@ -50,8 +50,7 @@ public class MqDirect {
             queue.get(theMessage, gmo);
             queueManager.backout();
             int strLen = theMessage.readInt();
-            byte[] strData = new byte[strLen];
-            System.out.println(theMessage.readStringOfByteLength(strLen));
+//            System.out.println(theMessage.readStringOfByteLength(strLen));
         }
         System.out.println("Avg time for 100 messages (Direct): " + String.valueOf((System.currentTimeMillis() - start)/1000.00));
         queue.close();
