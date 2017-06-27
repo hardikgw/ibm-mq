@@ -4,6 +4,7 @@ package biz.cit.ibmmq;
  * Created by hp on 6/24/17.
  */
 import com.ibm.mq.MQEnvironment;
+import com.ibm.mq.MQException;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
 import javafx.scene.control.SelectionMode;
@@ -23,6 +24,7 @@ import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import java.io.IOException;
 
 //and setting MQEnvironment.hostname and MQEnvironment.channel.
 
@@ -48,7 +50,6 @@ public class App {
             mqQueueConnectionFactory.setCCSID(1208);
             mqQueueConnectionFactory.setQueueManager("QM1");
             mqQueueConnectionFactory.setPort(1414);
-            mqQueueConnectionFactory.setVersion(9);
             mqQueueConnectionFactory.setChannel("DEV.ADMIN.SVRCONN");
             mqQueueConnectionFactory.setUseConnectionPooling(true);
         } catch (JMSException e) {
@@ -94,6 +95,15 @@ public class App {
     }
 
     public static void main(String[] args) {
+
+        try {
+            MqDirect.benchmark();
+        } catch (MQException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
 
         JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
@@ -109,7 +119,8 @@ public class App {
         for (int i = 0; i < 100; i++) {
             String received = (String) jmsTemplate.receiveAndConvert("DEV.QUEUE.1");
         }
-        System.out.println("Avg time for 100 messages: " + String.valueOf((System.currentTimeMillis() - start)/100));
+
+        System.out.println("Avg time for 100 messages (JMS Template): " + String.valueOf((System.currentTimeMillis() - start)/100));
 
     }
 
