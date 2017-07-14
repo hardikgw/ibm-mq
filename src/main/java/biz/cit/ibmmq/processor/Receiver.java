@@ -6,7 +6,7 @@ package biz.cit.ibmmq.processor;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class Receiver {
 
     @JmsListener(destination = "DEV.QUEUE.1", containerFactory = "myFactory")

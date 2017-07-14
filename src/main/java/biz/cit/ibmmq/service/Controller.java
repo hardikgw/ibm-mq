@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by hp on 6/25/17.
@@ -20,21 +18,43 @@ public class Controller {
     @Autowired
     ApplicationContext context;
 
+    @RequestMapping(value = "/admin", method = RequestMethod.POST)
+    String admin(@RequestBody String command) {
+        JmsListenerEndpointRegistry jmsRegistry =
+                context.getBean(JmsListenerEndpointRegistry.class);
+        String response = "";
+        switch (command.trim().toLowerCase()) {
+            case "start":
+                if (!jmsRegistry.isRunning()) {
+                    jmsRegistry.start();
+                }
+                response = "started";
+                break;
+            case "stop":
+                jmsRegistry.stop();
+                response = "stopped";
+                break;
+            default:
+                response = jmsRegistry.isRunning() ? "ok" : "down";
+        }
+        return  response;
+    }
+
     @RequestMapping(value = "/halt", method = RequestMethod.GET)
     public @ResponseBody
     String haltJmsListener() {
-        JmsListenerEndpointRegistry customRegistry =
+        JmsListenerEndpointRegistry jmsRegistry =
                 context.getBean(JmsListenerEndpointRegistry.class);
-        customRegistry.stop();
+        jmsRegistry.stop();
         return "Jms Listener Stopped";
     }
 
     @RequestMapping(value = "/restart", method = RequestMethod.GET)
     public @ResponseBody
     String reStartJmsListener() {
-        JmsListenerEndpointRegistry customRegistry =
+        JmsListenerEndpointRegistry jmsRegistry =
                 context.getBean(JmsListenerEndpointRegistry.class);
-        customRegistry.start();
+        jmsRegistry.start();
         return "Jms Listener restarted";
     }
 
@@ -46,4 +66,12 @@ public class Controller {
         return "stopped";
     }
 
+    @RequestMapping(value = "/post", method = RequestMethod.GET)
+    void post() {
+        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+        System.out.println("Sending messages.");
+        for (int i = 0; i < 100; i++) {
+            jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World");
+        }
+    }
 }
