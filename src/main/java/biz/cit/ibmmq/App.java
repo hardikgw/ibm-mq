@@ -53,7 +53,7 @@ public class App {
     @Bean
     public MQQueueConnectionFactory mqQueueConnectionFactory() {
         MQQueueConnectionFactory mqQueueConnectionFactory = new MQQueueConnectionFactory();
-        mqQueueConnectionFactory.setHostName("localhost");
+        mqQueueConnectionFactory.setHostName("mq");
         try {
             mqQueueConnectionFactory.setTransportType(WMQConstants.WMQ_CM_BINDINGS_THEN_CLIENT);
 //            mqQueueConnectionFactory.setCCSID(1208);

@@ -20,6 +20,7 @@ public class Controller {
 
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
     String admin(@RequestBody String command) {
+        System.out.println(">>>>>>>>>>>>>> Received Command : " + command);
         JmsListenerEndpointRegistry jmsRegistry =
                 context.getBean(JmsListenerEndpointRegistry.class);
         String response = "";
